@@ -194,7 +194,7 @@ section.success {
 }
 #portfolio .portfolio-item {
   margin: 0 0 15px;
-  right: 0;
+  right: 100;
 }
 #portfolio .portfolio-item .portfolio-link {
   display: block;
