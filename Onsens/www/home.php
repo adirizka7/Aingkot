@@ -1,3 +1,12 @@
+<?php
+session_start();
+include_once 'dbconnect.php';
+
+if (!isset($_SESSION['userSession'])) {
+	header("Location: index.php");
+}
+?>
+
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -16,11 +25,9 @@
     ons.ready(function() {
       console.log("Onsen UI is ready!");
     });
-
     document.addEventListener('show', function(event) {
       var page = event.target;
       var titleElement = document.querySelector('#toolbar-title');
-
       if (page.matches('#first-page')) {
         titleElement.innerHTML = 'I-NGKOT';
       } else if (page.matches('#second-page')) {
@@ -28,12 +35,10 @@
       }
     });
     window.fn = {};
-
     window.fn.open = function() {
       var menu = document.getElementById('menu');
       menu.open();
     };
-
     window.fn.load = function(page) {
       var content = document.getElementById('content');
       var menu = document.getElementById('menu');
@@ -50,7 +55,7 @@
         <ons-list-item onclick="fn.load('home.html')" tappable>
           Home
         </ons-list-item>
-        <ons-list-item onclick="fn.load('logout.php')" tappable>
+        <ons-list-item onclick="fn.load('logout.php?logout')" tappable>
           Sign Out
         </ons-list-item>
         <ons-list-item onclick="fn.load('about.html')" tappable>
