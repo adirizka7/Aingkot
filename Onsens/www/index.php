@@ -55,7 +55,9 @@
           </p>
 
           <p style="margin-top: 30px;">
-            <ons-button onclick="login()">Sign Up</ons-button>
+            <button class = "button">Sign Up</button>
+            <!-- <a href = "signup()" class = "button" >Sign Up</a> -->
+            <!-- <ons-button onclick="login()">Sign Up</ons-button> -->
           </p>
         </div>
       </p>
@@ -74,7 +76,7 @@
           </p>
 
           <p style="margin-top: 30px;">
-            <ons-button onclick="login()">Sign in</ons-button>
+            <button class = "button">Sign In</button>
           </p>
         </div>
       </p>
