@@ -51,6 +51,8 @@ if (!isset($_SESSION['userSession'])) {
   <ons-splitter>
   <ons-splitter-side id="menu" side="left" width="220px" collapse swipeable>
     <ons-page>
+    <p><img src="1439015645187.jpg" style="width: 55vw; height: 30vh; border-radius: 50%; margin-left: 3vw"></p>
+    <p style="text-align: center;">Name User</p>
       <ons-list>
         <ons-list-item onclick="fn.load('home.html')" tappable>
           Home
@@ -88,7 +90,7 @@ if (!isset($_SESSION['userSession'])) {
         <ons-icon size="30px" icon="ion-android-car"></ons-icon>
       </ons-tab>
       <ons-tab page="tab4.html">
-        <ons-icon size="30px" icon="md-face"></ons-icon>
+        <ons-icon size="30px" icon="ion-android-person"></ons-icon>
       </ons-tab>
     </ons-tabbar>
   </ons-page>
@@ -155,32 +157,27 @@ if (!isset($_SESSION['userSession'])) {
           <ons-list-header>Profile</ons-list-header>
           <ons-list-item modifier="nodivider">
             <div class="center">Name</div>
-            <div class="right">
-              <a href="adi.html"> <ons-icon size="25px" icon="ion-edit" ></ons-icon> </a>
             </div>
           </ons-list-item>
 
           <ons-list-item modifier="nodivider">
             <div class="center">Email</div>
-            <div class="right">
-              <a href="adi.html"> <ons-icon size="25px" icon="ion-edit" ></ons-icon> </a>
             </div>
           </ons-list-item>
 
           <ons-list-item modifier="nodivider">
             <div class="center">Phone</div>
-            <div class="right">
-              <a href="adi.html"> <ons-icon size="25px" icon="ion-edit" ></ons-icon> </a>
             </div>
           </ons-list-item>
 
           <ons-list-item modifier="nodivider">
             <div class="center">Password</div>
-            <div class="right">
-              <a href="adi.html"> <ons-icon size="25px" icon="ion-edit" ></ons-icon> </a>
             </div>
           </ons-list-item>
-
+          <p>
+          <a href="edit.html"> <ons-button modifier="large">Edit</ons-button> </a>
+          </div>
+          </p>
         </ons-list>
       <!-- </p> -->
     </ons-page>
