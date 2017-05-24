@@ -1,9 +1,25 @@
 <?php
 session_start();
 include_once 'dbconnect.php';
-
 if (!isset($_SESSION['userSession'])) {
 	header("Location: index.php");
+}
+if($_SESSION['status']==1){
+$query = $DBcon->query("SELECT * FROM pelanggan WHERE id_pelanggan=".$_SESSION['userSession']);
+$userRow=$query->fetch_array();
+$DBcon->close();
+}
+else{
+	$query = $DBcon->query("SELECT * FROM sopir WHERE id_sopir=".$_SESSION['userSession']);
+	$userRow=$query->fetch_array();
+	$DBcon->close();
+}
+if(isset($_SESSION['popbox'])){
+	echo "<script language='javascript'>
+			var uhuy='Data Berhasil di Update';
+            alert(uhuy);
+            </script>";
+	unset($_SESSION['popbox']);
 }
 ?>
 
@@ -51,10 +67,29 @@ if (!isset($_SESSION['userSession'])) {
   <ons-splitter>
   <ons-splitter-side id="menu" side="left" width="220px" collapse swipeable>
     <ons-page>
-    <p><img src="1439015645187.jpg" style="width: 55vw; height: 30vh; border-radius: 50%; margin-left: 3vw"></p>
-    <p style="text-align: center;">Name User</p>
       <ons-list>
-        <ons-list-item onclick="fn.load('home.html')" tappable>
+		<ons-list-item>
+      <div class="left">
+				<?php if($userRow['image']==NULL){ ?>
+        <img class="list-item__thumbnail" src="https://i.redd.it/w0lr6mwopkxy.png">
+				<?php } else {?>
+					<img class="list-item__thumbnail" src="<?php echo $userRow['image'] ?>">
+					<?php } ?>
+      </div>
+	  <?php
+	  if($_SESSION['status'] == 1){
+      echo "<div class='center'>";
+       echo "<span class='list-item__title'>". $userRow['username'] ."</span><span class='list-item__subtitle'>Pelanggan</span>";
+      echo "</div>";
+	  }
+	  else if($_SESSION['status'] == 2){
+      echo "<div class='center'>";
+       echo "<span class='list-item__title'>". $userRow['username'] ."</span><span class='list-item__subtitle'>Sopir</span>";
+      echo "</div>";
+	  }
+	  ?>
+    </ons-list-item>
+        <ons-list-item onclick="fn.load('home.php')" tappable>
           Home
         </ons-list-item>
         <ons-list-item onclick="fn.load('logout.php?logout')" tappable>
@@ -155,27 +190,52 @@ if (!isset($_SESSION['userSession'])) {
       <!-- <p style="text-align: center;"> -->
         <ons-list>
           <ons-list-header>Profile</ons-list-header>
-          <ons-list-item modifier="nodivider">
-            <div class="center">Name</div>
-            </div>
-          </ons-list-item>
-
-          <ons-list-item modifier="nodivider">
-            <div class="center">Email</div>
-            </div>
-          </ons-list-item>
-
-          <ons-list-item modifier="nodivider">
-            <div class="center">Phone</div>
-            </div>
-          </ons-list-item>
-
-          <ons-list-item modifier="nodivider">
-            <div class="center">Password</div>
-            </div>
-          </ons-list-item>
+		  <?php
+          echo "<ons-list-item modifier='nodivider'>";
+            echo "<div class='center'>". $userRow['username'] ."</div>";
+            echo "</div>";
+          echo"</ons-list-item>";
+			echo "<ons-list-header>email</ons-list-header>";
+          echo "<ons-list-item modifier='nodivider'>";
+            echo "<div class='center'>".$userRow['email']."</div>";
+            echo "</div>";
+          echo "</ons-list-item>";
+			echo"<ons-list-header>Nomor Telepon</ons-list-header>";
+          echo"<ons-list-item modifier='nodivider'>";
+            echo"<div class='center'>".$userRow['no_telp']."</div>";
+            echo "</div>";
+          echo "</ons-list-item>";
+		  if($_SESSION['status'] == 1){
+				$alamat=$userRow['alamat'];
+				echo"<ons-list-header>Alamat</ons-list-header>";
+				echo"<ons-list-item modifier='nodivider'>";
+				echo"<div class='center'>";
+				if($alamat==""){echo "Alamat belum diset!";} else {echo $alamat;}
+				echo "</div>";
+				echo "</div>";
+				echo "</ons-list-item>";
+				$ttl=$userRow['tanggal_lahir'];
+				echo"<ons-list-header>Tanggal Lahir</ons-list-header>";
+				echo"<ons-list-item modifier='nodivider'>";
+				echo"<div class='center'>";
+				if($ttl=="0000-00-00"){echo "Tanggal lahir belum diset!";} else {echo $ttl;}
+				echo "</div>";
+				echo "</div>";
+				echo "</ons-list-item>";
+		  }
+		  else {
+				$np=$userRow['no_plat'];
+				echo"<ons-list-header>Nomor Plat</ons-list-header>";
+				echo"<ons-list-item modifier='nodivider'>";
+				echo"<div class='center'>";
+				if($np=="0"){echo "Nomor plat belum diset!";} else {echo $np;}
+				echo "</div>";
+				echo "</div>";
+				echo "</ons-list-item>";
+		  }
+		  ?>
           <p>
-          <a href="edit.html"> <ons-button modifier="large">Edit</ons-button> </a>
+          <a href="edit.php"> <ons-button modifier="large">Edit</ons-button> </a>
           </div>
           </p>
         </ons-list>

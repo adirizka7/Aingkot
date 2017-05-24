@@ -3,29 +3,37 @@ session_start();
 require_once 'dbconnect.php';
 
 if (isset($_SESSION['userSession'])!="") {
-	header("Location:  http://localhost/onsen/home.php");
+	header("Location:  home.php");
 	exit;
 }
 
 if (isset($_POST['btn-login'])) {
-	
+
 	$email = strip_tags($_POST['email']);
 	$password = strip_tags($_POST['password']);
-	
+
 	$email = $DBcon->real_escape_string($email);
 	$password = $DBcon->real_escape_string($password);
-	
+
 	$query = $DBcon->query("SELECT id_pelanggan, email, password FROM pelanggan WHERE email='$email'");
-	echo $_POST['email'], $_POST['password'];
+	$squery = $DBcon->query("SELECT id_sopir, email, password FROM sopir WHERE email='$email'");
 	$row=$query->fetch_array();
-	
-	$count = $query->num_rows; // if email/password are correct returns must be 1 row
-	
+	$srow=$squery->fetch_array();
+
+	$count = $query->num_rows;
+	$scount = $squery->num_rows;// if email/password are correct returns must be 1 row
+
 	if (password_verify($password, $row['password']) && $count==1) {
 		$_SESSION['userSession'] = $row['id_pelanggan'];
 		$_SESSION['status'] = 1;
-		header("Location: http://localhost/onsen/home.php");
-	} else {
+		header("Location: home.php");
+	}
+	else if(password_verify($password, $srow['password']) && $scount==1){
+		$_SESSION['userSession'] = $srow['id_sopir'];
+		$_SESSION['status'] = 2;
+		header("Location: home.php");
+	}
+	else {
 		$msg = "<div class='alert alert-danger'>
 					<span class='glyphicon glyphicon-info-sign'></span> &nbsp; Invalid Username or Password !
 				</div>";
@@ -34,25 +42,34 @@ if (isset($_POST['btn-login'])) {
 }
 
 if(isset($_POST['button-sign'])) {
-	
+
 	$username = strip_tags($_POST['username']);
 	$email = strip_tags($_POST['email']);
 	$upass = strip_tags($_POST['password']);
 	$phone = strip_tags($_POST['phone']);
 	$cupass = strip_tags($_POST['cpassword']);
-	
+
+	if(strlen($upass) < 4){
+    echo "<script language='javascript'>
+    var uhuy='Password Harus lebih dari 4 karakter!!';
+          alert(uhuy);
+          </script>";
+  }
+
+	else if($upass==$cupass){
+
 	$username = $DBcon->real_escape_string($username);
 	$email = $DBcon->real_escape_string($email);
 	$upass = $DBcon->real_escape_string($upass);
 	$phone = $DBcon->real_escape_string($phone);
-	
+
 	$hashed_password = password_hash($upass, PASSWORD_DEFAULT); // this function works only in PHP 5.5 or latest version
-	
+
 	$check_email = $DBcon->query("SELECT email FROM pelanggan WHERE email='$email'");
 	$count=$check_email->num_rows;
-	
+
 	if ($count==0) {
-		
+
 		$query = "INSERT INTO pelanggan(username,email,password,no_telp) VALUES('$username','$email','$hashed_password','$phone')";
 		if ($DBcon->query($query)) {
 			$msg = "<div class='alert alert-success'>
@@ -62,22 +79,94 @@ if(isset($_POST['button-sign'])) {
 			$row=$query->fetch_array();
 			$_SESSION['userSession'] = $row['id_pelanggan'];
 			$_SESSION['status'] = 1;
-			header("Location: http://localhost/onsen/home.php");
-				
+			header("Location: home.php");
+
 		}else {
-			$msg = "<div class='alert alert-danger'>
-						<span class='glyphicon glyphicon-info-sign'></span> &nbsp; error while registering !
-					</div>";
+			echo "<script language='javascript'>
+					var uhuy='Data Tidak Ditemukan';
+		            alert(uhuy);
+		            </script>";
 		}
-		
+
 	} else {
-		
-		$msg = "<div class='alert alert-danger'>
-					<span class='glyphicon glyphicon-info-sign'></span> &nbsp; sorry email already taken !
-				</div>";
-			
+
+		echo "<script language='javascript'>
+				var uhuy='Email Sudah Diambil';
+							alert(uhuy);
+							</script>";
+
 	}
 	$DBcon->close();
+}
+
+else {
+		echo "<script language='javascript'>
+			var uhuy='password tidak sesuai';
+            alert(uhuy);
+            </script>";
+	}
+}
+else if(isset($_POST['button-sign-s'])) {
+
+	$username = strip_tags($_POST['username']);
+	$email = strip_tags($_POST['email']);
+	$upass = strip_tags($_POST['password']);
+	$phone = strip_tags($_POST['phone']);
+	$cupass = strip_tags($_POST['cpassword']);
+
+	if(strlen($upass) < 4){
+		echo "<script language='javascript'>
+		var uhuy='Password Harus lebih dari 4 karakter!!';
+					alert(uhuy);
+					</script>";
+	}
+	else if($upass==$cupass){
+
+	$username = $DBcon->real_escape_string($username);
+	$email = $DBcon->real_escape_string($email);
+	$upass = $DBcon->real_escape_string($upass);
+	$phone = $DBcon->real_escape_string($phone);
+
+	$hashed_password = password_hash($upass, PASSWORD_DEFAULT); // this function works only in PHP 5.5 or latest version
+
+	$check_email = $DBcon->query("SELECT email FROM sopir WHERE email='$email'");
+	$count=$check_email->num_rows;
+
+	if ($count==0) {
+		$query = "INSERT INTO sopir(username,email,password,no_telp) VALUES('$username','$email','$hashed_password','$phone')";
+		if ($DBcon->query($query)) {
+			$msg = "<div class='alert alert-success'>
+						<span class='glyphicon glyphicon-info-sign'></span> &nbsp; successfully registered !
+					</div>";
+			$query = $DBcon->query("SELECT id_sopir, email, password FROM sopir WHERE email='$email'");
+			$row=$query->fetch_array();
+			$_SESSION['userSession'] = $row['id_sopir'];
+			$_SESSION['status'] = 2;
+			header("Location: home.php");
+
+		}else {
+			echo "<script language='javascript'>
+					var uhuy='Data Tidak Ditemukan';
+		            alert(uhuy);
+		            </script>";
+		}
+
+	} else {
+
+		echo "<script language='javascript'>
+				var uhuy='Email Sudah Diambil';
+							alert(uhuy);
+							</script>";
+
+	}
+	$DBcon->close();
+}
+else {
+		echo "<script language='javascript'>
+			var uhuy='password tidak sesuai';
+            alert(uhuy);
+            </script>";
+	}
 }
 ?>
 
@@ -97,7 +186,7 @@ if(isset($_POST['button-sign'])) {
   <link rel="stylesheet" href="css/style.css">
 
 
-  
+
   <script>
     ons.ready(function() {
       console.log("Onsen UI is ready!");
@@ -111,7 +200,7 @@ if(isset($_POST['button-sign'])) {
         titleElement.innerHTML = 'I-NGKOT';
       }
     });
-	
+
   </script>
 </head>
 <body>
@@ -127,23 +216,23 @@ if(isset($_POST['button-sign'])) {
     </ons-tabbar>
   </ons-page>
 
-	
-	 <ons-template id="tab1.html">
-	<ons-page id="first-page">
+
+<ons-template id="tab1.html">
+<ons-page id="first-page">
 	<form method="post" id="register-form">
       <p style="text-align: center;">
         <div style="text-align: center; margin-top: 30px;">
           <p>
-            <p><ons-input id="name" modifier="underbar" name="username" placeholder="Name" float></ons-input></p>
-            <p><ons-input id="email" modifier="underbar" type="email" name="email" placeholder="Email" float></ons-input></p>
-            <p><ons-input id="phone" modifier="underbar" type="number" placeholder="Phone" name="phone" float></ons-input></p>
-            <p><ons-input id="password" modifier="underbar" type="password" name="password" placeholder="Password" float></ons-input></p>
-            <p><ons-input id="cpassword" modifier="underbar" type="password" placeholder="Confirm Password" name="cpassword" float></ons-input>
+            <p><ons-input id="name" modifier="underbar" name="username" placeholder="Name" value="<?php echo isset($_POST['username']) ? $_POST['username'] : '' ?>" float  pattern=".{4,16}" required oninvalid="this.setCustomValidity('Salah woy')"></ons-input></p>
+            <p><ons-input id="email" modifier="underbar" type="email" name="email" placeholder="Email" value="<?php echo isset($_POST['email']) ? $_POST['email'] : '' ?>" float  pattern=".{4,100}" required ></ons-input></p>
+            <p><ons-input id="phone" modifier="underbar" type="number" placeholder="Phone" name="phone" value="<?php echo isset($_POST['phone']) ? $_POST['phone'] : '' ?>" float  pattern=".{4,16}" required ></ons-input></p>
+            <p><ons-input id="password" modifier="underbar" type="password" name="password" placeholder="Password" float pattern=".{4,16}" required></ons-input></p>
+            <p><ons-input id="cpassword" modifier="underbar" type="password" placeholder="Confirm Password" name="cpassword" float pattern=".{4,16}" required></ons-input>
           </p>
 
 				<p style="margin-top: 30px;">
 			<button type="submit" class = "button" name="button-sign-s">Sign Up as Sopir</button>
-			<button class= "button" name="button-sign">Sign Up as Pelanggan</button>
+			<button type="subnit "class= "button" name="button-sign">Sign Up as Pelanggan</button>
             <!-- <a href = "signup()" class = "button" >Sign Up</a> -->
             <!--<ons-button onclick="login()">Sign Up</ons-button> -->
           </p>
@@ -153,24 +242,25 @@ if(isset($_POST['button-sign'])) {
 	  </form>
 	  </ons-page>
   </ons-template>
-  
+
 
   <ons-template id="tab2.html">
     <ons-page id="second-page">
+	<form method="post" id="register-form">
       <p style="text-align: center;">
         <div style="text-align: center; margin-top: 30px;">
           <p>
-            <ons-input id="username" modifier="underbar" placeholder="Username" float></ons-input>
+            <ons-input id="email" modifier="underbar" type="email" placeholder="Email" name="email" float required></ons-input>
           </p>
           <p>
-            <ons-input id="password" modifier="underbar" type="password" placeholder="Password" float></ons-input>
+            <ons-input id="password" modifier="underbar" type="password" name="password" placeholder="Password" float required></ons-input>
           </p>
-
           <p style="margin-top: 30px;">
-            <ons-button onclick="login()">Sign in</ons-button>
+            <button type="submit" class = "button" name="btn-login">Login</button>
           </p>
         </div>
       </p>
+	  </form>
     </ons-page>
   </ons-template>
 </body>
