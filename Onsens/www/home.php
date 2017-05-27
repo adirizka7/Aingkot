@@ -61,7 +61,22 @@ if(isset($_SESSION['popbox'])){
       content.load(page)
         .then(menu.close.bind(menu));
     };
+
+		// Button Push Stack
+		document.addEventListener('init', function(event) {
+		  var page = event.target;
+
+		  if (page.id === 'page1') {
+		    page.querySelector('#push-button').onclick = function() {
+		      document.querySelector('#myNavigator').pushPage('page2.html', {data: {title: 'Page 2'}});
+		    };
+		  } else if (page.id === 'page2') {
+		    page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+		  }
+		});
+
   </script>
+
 </head>
 <body>
   <ons-splitter>
@@ -177,16 +192,73 @@ if(isset($_SESSION['popbox'])){
     </ons-page>
   </ons-template>
 
-  <ons-template id="tab3.html">
-    <ons-page id="second-page">
-      <p style="text-align: center;">
-        Coming Very Soon
-      </p>
-    </ons-page>
-  </ons-template>
+	<ons-template id="tab3.html">
+		<ons-page id = "third-page">
+			<ons-navigator id="myNavigator" page="page1.html"></ons-navigator>
+
+			<ons-template id="page1.html">
+			  <ons-page id="page1">
+			    <ons-toolbar>
+			      <div class="center">Pending Carteran</div>
+						<div class="right">
+					    <ons-toolbar-button id="push-button">New</ons-toolbar-button>
+						</div>
+			    </ons-toolbar>
+
+					<ons-list-item tappable>
+			      <div class="left">
+			        <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
+			      </div>
+			      <div class="center">
+			        <span class="list-item__title">Mamat</span><span class="list-item__subtitle">Pending</span>
+							<span class="list-item__subtitle">081260605050</span>
+			      </div>
+			    </ons-list-item>
+
+					</ons-page>
+			</ons-template>
+
+			<ons-template id="page2.html">
+			  <ons-page id="page2">
+			    <ons-toolbar>
+			      <div class="left"><ons-back-button>Back</ons-back-button></div>
+			      <div class="center"></div>
+			    </ons-toolbar>
+
+					<ons-list-item tappable>
+			      <div class="left">
+			        <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
+			      </div>
+			      <div class="center">
+			        <span class="list-item__title">Mamat</span><span class="list-item__subtitle">Available</span>
+							<span class="list-item__subtitle">F 1717 EB</span>
+			      </div>
+						<div class="right">
+							<ons-button>Add</ons-button> <!-- Nambahin ke page1 pending -->
+						</div>
+			    </ons-list-item>
+
+					<ons-list-item tappable>
+			      <div class="left">
+			        <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
+			      </div>
+			      <div class="center">
+			        <span class="list-item__title">Paijo</span><span class="list-item__subtitle">Busy</span>
+							<span class="list-item__subtitle">F 8282 EB</span>
+			      </div>
+						<div class="right">
+							<ons-button>Add</ons-button> <!-- Kalo busy gabisa di tap -->
+						</div>
+			    </ons-list-item>
+
+			  </ons-page>
+			</ons-template>
+
+		</ons-page>
+	</ons-template>
 
   <ons-template id="tab4.html">
-    <ons-page id="second-page">
+    <ons-page id="fourth-page">
       <!-- <p style="text-align: center;"> -->
         <ons-list>
           <ons-list-header>Profile</ons-list-header>
